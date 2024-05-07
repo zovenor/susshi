@@ -1,11 +1,13 @@
 package sshserver
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/zovenor/logging/prettyPrints"
+	"github.com/zovenor/susshi/pkg/files"
 	"github.com/zovenor/tea-models/models"
 	"github.com/zovenor/tea-models/models/base"
 	"golang.org/x/crypto/ssh"
@@ -13,12 +15,11 @@ import (
 )
 
 type SSHServer struct {
-	Address  string
-	Port     uint32
-	Username string
-
-	password string
-	name     string
+	Address  string `json:"address"`
+	Port     uint32 `json:"port"`
+	Username string `json:"username"`
+	Password string `json:"password"`
+	Name     string `json:"name"`
 	tags     []string
 
 	sshClient *ssh.Client
@@ -45,21 +46,21 @@ func New(
 	return &SSHServer{
 		Address:  address,
 		Port:     port,
-		password: password,
+		Password: password,
 		Username: username,
 	}
 }
 
 func (s *SSHServer) SetName(name string) {
-	s.name = name
+	s.Name = name
 }
 
-func (s *SSHServer) Name() string {
+func (s *SSHServer) GetName() string {
 	var name string
-	if s.name == "" {
+	if s.Name == "" {
 		name += fmt.Sprintf("%v:%v", s.Address, s.Port)
 	} else {
-		name += s.name
+		name += s.Name
 	}
 	for _, tag := range s.tags {
 		name += fmt.Sprintf(" %v", tag)
@@ -75,7 +76,7 @@ func (s *SSHServer) Connect() error {
 	config := &ssh.ClientConfig{
 		User: s.Username,
 		Auth: []ssh.AuthMethod{
-			ssh.Password(s.password),
+			ssh.Password(s.Password),
 		},
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 	}
@@ -183,7 +184,25 @@ func (servers *Servers) ToTeaModel(parent tea.Model, parentPath string) (tea.Mod
 		return nil, err
 	}
 	for _, server := range servers.ServerList() {
-		listItemView.AddItem(server.Name(), server)
+		listItemView.AddItem(server.GetName(), server)
 	}
 	return listItemView, nil
+}
+
+func (servers *Servers) ImportFromFile(filePath string) error {
+	files.CreateFolder(filePath)
+	f, err := os.OpenFile(filePath, os.O_CREATE|os.O_WRONLY, 0666)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+	bytes, err := os.ReadFile(filePath)
+	if err != nil {
+		return err
+	}
+	err = json.Unmarshal(bytes, servers)
+	if err != nil {
+		return err
+	}
+	return nil
 }

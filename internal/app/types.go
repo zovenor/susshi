@@ -4,7 +4,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 
 	"github.com/zovenor/logging/prettyPrints"
-	sshserver "github.com/zovenor/susshi/entities/ssh-server"
+	sshserver "github.com/zovenor/susshi/internal/ssh-server"
 	"github.com/zovenor/tea-models/models"
 )
 
