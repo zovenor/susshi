@@ -1,7 +1,7 @@
 ### Go 1.21.4+
 
-### Run
+### Install
 
 ```shell
-make run-test
+make install
 ```
