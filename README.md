@@ -24,6 +24,8 @@ For example:
 make install
 ```
 
+### Run
+
 ```shell
 susshi
 ```
