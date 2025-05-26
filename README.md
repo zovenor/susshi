@@ -15,7 +15,7 @@ _"It’s `ssh` with a Vim-shaped exoskeleton."_
 ![](./assets/preview.gif)
 ### Install & Usage
 ```shell
-go install github.com/zovenor/susshi@latest
+go install github.com/zovenor/susshi/cmd/susshi@latest
 
 susshi
 ```
