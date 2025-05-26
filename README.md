@@ -10,6 +10,7 @@
 - Want _visibility_ (no more guessing aliases)
 - Demand **Vim keys** in every tool
 - Trust `ssh` but crave a better UX
+
 _"It’s `ssh` with a Vim-shaped exoskeleton."_
  
 ![](./assets/preview.gif)
